@@ -8,9 +8,8 @@ Este repositório contém um trabalho prático sobre a alteração da tela de de
 2. [Recursos](#recursos)
 3. [Requisitos](#requisitos)
 4. [Configuração de Hardware](#configuração-de-hardware)
-5. [Aplicando Patches](#aplicando-patches)
-6. [Uso](#uso)
-7. [Contato](#contato)
+5. [Uso](#uso)
+6. [Contato](#contato)
 
 ## Contribuidores
 <img src="https://github.com/DevTITANS05/Hands-On-Linux-fork-/assets/21023906/85e61f3e-476c-47a4-82d5-4054e856c67b" width="180" >
@@ -60,10 +59,6 @@ Para compilar e testar o AOSP, é recomendável ter:
 - RAM: 16 GB (32 GB recomendados)
 - Espaço em disco: 250 GB (500 GB recomendados)
 - Conexão de internet de alta velocidade
-
-## Aplicando Patches
-Para aplicar os patches disponíveis neste repositório, siga os passos abaixo:
-
 
 ## Uso
 Após aplicar os patches, compile o AOSP normalmente. O processo pode variar dependendo da versão do AOSP e do dispositivo de destino. Em geral, os comandos são:
