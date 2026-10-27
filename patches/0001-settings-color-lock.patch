@@ -1,0 +1,479 @@
+diff --git a/res/layout/choose_lock_color.xml b/res/layout/choose_lock_color.xml
+new file mode 100644
+index 0000000..06f77a2
+--- /dev/null
++++ b/res/layout/choose_lock_color.xml
+@@ -0,0 +1,170 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!--
++     Copyright (C) 2026 DevTITANS 10 - Hands-On AOSP
++
++     Enrolment screen for the colour sequence lock.
++
++     This is a drop-in replacement for choose_lock_password.xml and MUST keep every view id that
++     ChooseLockPasswordFragment looks up, otherwise the fragment crashes on a null view:
++       sud_layout_description, password_container, password_entry,
++       auto_pin_confirm_enabler, auto_pin_confirm_security_message.
++     The two auto-confirm views are kept but hidden: this modality always submits explicitly.
++-->
++<com.google.android.setupdesign.GlifLayout
++    xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:settings="http://schemas.android.com/apk/res-auto"
++    android:id="@+id/setup_wizard_layout"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:icon="@drawable/ic_lock"
++    android:importantForAutofill="noExcludeDescendants">
++
++    <LinearLayout
++        style="@style/SudContentFrame"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
++        android:clipChildren="false"
++        android:clipToPadding="false"
++        android:gravity="center_horizontal"
++        android:orientation="vertical">
++
++        <TextView
++            android:id="@+id/sud_layout_description"
++            style="@style/SudDescription.Glif"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:minLines="2"/>
++
++        <LinearLayout
++            android:id="@+id/password_container"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:layout_marginTop="16dp"
++            android:clipChildren="false"
++            android:clipToPadding="false"
++            android:orientation="vertical"
++            android:layoutMode="opticalBounds"
++            android:paddingBottom="8dp">
++
++            <!-- Progress indicator. Deliberately rendered as neutral dots rather than the chosen
++                 colours: echoing the colours back would hand the sequence to anyone watching. -->
++            <com.android.settings.widget.ScrollToParentEditText
++                android:id="@+id/password_entry"
++                android:layout_width="match_parent"
++                android:layout_height="wrap_content"
++                android:layout_gravity="center"
++                android:gravity="center"
++                android:cursorVisible="false"
++                android:focusableInTouchMode="true"
++                android:inputType="numberPassword"
++                android:imeOptions="actionNext|flagNoExtractUi|flagForceAscii"
++                style="@style/TextAppearance.PasswordEntry"/>
++
++            <CheckBox
++                android:id="@+id/auto_pin_confirm_enabler"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:layout_marginTop="8dp"
++                android:layout_gravity="center_horizontal"
++                android:gravity="center"
++                android:text="@string/auto_pin_confirm_user_message"
++                android:textSize="16sp"
++                android:button="@drawable/checkbox_circle_shape"
++                android:visibility="gone"/>
++
++        </LinearLayout>
++
++        <TextView
++            android:id="@+id/auto_pin_confirm_security_message"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:layout_marginTop="24dp"
++            android:gravity="center"
++            android:text="@string/auto_pin_confirm_opt_in_security_message"
++            android:textSize="16sp"
++            android:visibility="gone"/>
++
++        <!-- The palette. Row/column position defines the digit each colour stands for, so the
++             order here is part of the credential format and must match ColorLockUtils.KEY_IDS. -->
++        <GridLayout
++            android:id="@+id/color_pad"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++            android:layout_marginTop="24dp"
++            android:columnCount="3"
++            android:rowCount="2">
++
++            <View
++                android:id="@+id/color_key_1"
++                android:layout_width="88dp"
++                android:layout_height="88dp"
++                android:layout_margin="8dp"
++                android:background="@color/color_lock_red"
++                android:clickable="true"
++                android:focusable="true"
++                android:contentDescription="@string/color_lock_red"/>
++
++            <View
++                android:id="@+id/color_key_2"
++                android:layout_width="88dp"
++                android:layout_height="88dp"
++                android:layout_margin="8dp"
++                android:background="@color/color_lock_orange"
++                android:clickable="true"
++                android:focusable="true"
++                android:contentDescription="@string/color_lock_orange"/>
++
++            <View
++                android:id="@+id/color_key_3"
++                android:layout_width="88dp"
++                android:layout_height="88dp"
++                android:layout_margin="8dp"
++                android:background="@color/color_lock_yellow"
++                android:clickable="true"
++                android:focusable="true"
++                android:contentDescription="@string/color_lock_yellow"/>
++
++            <View
++                android:id="@+id/color_key_4"
++                android:layout_width="88dp"
++                android:layout_height="88dp"
++                android:layout_margin="8dp"
++                android:background="@color/color_lock_green"
++                android:clickable="true"
++                android:focusable="true"
++                android:contentDescription="@string/color_lock_green"/>
++
++            <View
++                android:id="@+id/color_key_5"
++                android:layout_width="88dp"
++                android:layout_height="88dp"
++                android:layout_margin="8dp"
++                android:background="@color/color_lock_blue"
++                android:clickable="true"
++                android:focusable="true"
++                android:contentDescription="@string/color_lock_blue"/>
++
++            <View
++                android:id="@+id/color_key_6"
++                android:layout_width="88dp"
++                android:layout_height="88dp"
++                android:layout_margin="8dp"
++                android:background="@color/color_lock_purple"
++                android:clickable="true"
++                android:focusable="true"
++                android:contentDescription="@string/color_lock_purple"/>
++
++        </GridLayout>
++
++        <!-- Tap removes the last colour, long press clears the whole sequence. -->
++        <Button
++            android:id="@+id/color_key_delete"
++            style="?android:attr/borderlessButtonStyle"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++            android:layout_marginTop="8dp"
++            android:text="@android:string/cancel"/>
++
++    </LinearLayout>
++
++</com.google.android.setupdesign.GlifLayout>
+diff --git a/res/values/color_lock_palette.xml b/res/values/color_lock_palette.xml
+new file mode 100644
+index 0000000..b7948a6
+--- /dev/null
++++ b/res/values/color_lock_palette.xml
+@@ -0,0 +1,16 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!--
++     Copyright (C) 2026 DevTITANS 10 - Hands-On AOSP
++
++     Palette for the colour sequence screen lock. The order of these entries is part of the
++     credential: position 1..6 maps to digit 1..6, so reordering them invalidates every sequence
++     already enrolled on a device.
++-->
++<resources>
++    <color name="color_lock_red">#D32F2F</color>
++    <color name="color_lock_orange">#F57C00</color>
++    <color name="color_lock_yellow">#FBC02D</color>
++    <color name="color_lock_green">#388E3C</color>
++    <color name="color_lock_blue">#1976D2</color>
++    <color name="color_lock_purple">#7B1FA2</color>
++</resources>
+diff --git a/res/values/strings.xml b/res/values/strings.xml
+index 7fe1daa..372bfc6 100644
+--- a/res/values/strings.xml
++++ b/res/values/strings.xml
+@@ -1203,6 +1203,32 @@
+     <!-- Title for preference that guides the user through creating an unlock PIN (Personal Identification Number) [CHAR LIMIT=22] -->
+     <string name="unlock_set_unlock_pin_title">PIN</string>
+ 
++    <!-- Title for preference that guides the user through creating an unlock colour sequence [CHAR LIMIT=22] -->
++    <string name="unlock_set_unlock_color_title">Colors</string>
++
++    <!-- Summary shown under the colour sequence option [CHAR LIMIT=NONE] -->
++    <string name="unlock_set_unlock_color_summary">Tap a sequence of colors to unlock</string>
++
++    <!-- Instruction shown while choosing a colour sequence [CHAR LIMIT=NONE] -->
++    <string name="lockpassword_choose_your_color_header">Tap 4 to 8 colors in an order you can remember</string>
++
++    <!-- Instruction shown while confirming a colour sequence [CHAR LIMIT=NONE] -->
++    <string name="lockpassword_confirm_your_color_header">Tap your color sequence again to confirm</string>
++
++    <!-- Error shown when the colour sequence is too short [CHAR LIMIT=NONE] -->
++    <string name="lockpassword_color_too_short">Use at least 4 colors</string>
++
++    <!-- Error shown when the two colour sequences differ [CHAR LIMIT=NONE] -->
++    <string name="lockpassword_color_mismatch">Color sequences don\'t match</string>
++
++    <!-- Content descriptions of the colour keys, used by TalkBack [CHAR LIMIT=NONE] -->
++    <string name="color_lock_red">Red</string>
++    <string name="color_lock_orange">Orange</string>
++    <string name="color_lock_yellow">Yellow</string>
++    <string name="color_lock_green">Green</string>
++    <string name="color_lock_blue">Blue</string>
++    <string name="color_lock_purple">Purple</string>
++
+     <!-- Title for preference that guides the user through creating an unlock password [CHAR LIMIT=22] -->
+     <string name="unlock_set_unlock_password_title">Password</string>
+ 
+diff --git a/res/xml/security_settings_picker.xml b/res/xml/security_settings_picker.xml
+index aed7029..e96615e 100644
+--- a/res/xml/security_settings_picker.xml
++++ b/res/xml/security_settings_picker.xml
+@@ -42,6 +42,13 @@
+             android:icon="@drawable/ic_lock_pin"
+             android:persistent="false"/>
+ 
++    <com.android.settingslib.RestrictedPreference
++            android:key="unlock_set_color"
++            android:title="@string/unlock_set_unlock_color_title"
++            android:summary="@string/unlock_set_unlock_color_summary"
++            android:icon="@drawable/ic_lock_pin"
++            android:persistent="false"/>
++
+     <com.android.settingslib.RestrictedPreference
+             android:key="unlock_set_password"
+             android:title="@string/unlock_set_unlock_password_title"
+diff --git a/src/com/android/settings/password/ChooseLockGeneric.java b/src/com/android/settings/password/ChooseLockGeneric.java
+index 0bf1255..30b436b 100644
+--- a/src/com/android/settings/password/ChooseLockGeneric.java
++++ b/src/com/android/settings/password/ChooseLockGeneric.java
+@@ -458,6 +458,10 @@ public class ChooseLockGeneric extends SettingsActivity {
+                     getActivity().setResult(resultCode, data);
+                     finish();
+                 } else {
++                    // Enrolment was abandoned, so the colour modality was never actually
++                    // committed. Leaving the marker set would make the bouncer offer a colour
++                    // palette for a credential that was not created from one.
++                    ColorLockUtils.setColorMode(getContext(), mUserId, false);
+                     // If PASSWORD_TYPE_KEY is set, this activity is used as a trampoline to start
+                     // the actual password enrollment. If the result is canceled, which means the
+                     // user pressed back, finish the activity with result canceled.
+@@ -950,11 +954,16 @@ public class ChooseLockGeneric extends SettingsActivity {
+ 
+             ScreenLockType lock = ScreenLockType.fromKey(unlockMethod);
+             if (lock != null) {
++                // The colour modality shares PASSWORD_QUALITY_NUMERIC with PIN, so the choice
++                // has to be recorded separately before the credential is enrolled. It is
++                // cleared again in onActivityResult() if the user backs out of enrolment.
++                ColorLockUtils.setColorMode(getContext(), mUserId, lock == ScreenLockType.COLOR);
+                 switch (lock) {
+                     case NONE:
+                     case SWIPE:
+                     case PATTERN:
+                     case PIN:
++                    case COLOR:
+                     case PASSWORD:
+                     case MANAGED:
+                         updateUnlockMethodAndFinish(
+diff --git a/src/com/android/settings/password/ChooseLockGenericController.java b/src/com/android/settings/password/ChooseLockGenericController.java
+index cd9eb2f..fbf2e6e 100644
+--- a/src/com/android/settings/password/ChooseLockGenericController.java
++++ b/src/com/android/settings/password/ChooseLockGenericController.java
+@@ -178,6 +178,7 @@ public class ChooseLockGenericController {
+             case PIN:
+             case PATTERN:
+             case PASSWORD:
++            case COLOR:
+                 // Hide the secure lock screen options if the device doesn't support the secure lock
+                 // screen feature.
+                 return mLockPatternUtils.hasSecureLockScreen();
+diff --git a/src/com/android/settings/password/ChooseLockPassword.java b/src/com/android/settings/password/ChooseLockPassword.java
+index ed155bc..a39f551 100644
+--- a/src/com/android/settings/password/ChooseLockPassword.java
++++ b/src/com/android/settings/password/ChooseLockPassword.java
+@@ -477,6 +477,14 @@ public class ChooseLockPassword extends SettingsActivity {
+         @Override
+         public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                 Bundle savedInstanceState) {
++            // The colour modality reuses this whole enrolment flow: the credential it produces
++            // is an ordinary numeric PIN. Only the way the digits are entered differs, so the
++            // single thing that changes is which layout is inflated.
++            if (ColorLockUtils.isColorMode(getContext(), mUserId)) {
++                final View view = inflater.inflate(R.layout.choose_lock_color, container, false);
++                ColorLockUtils.bindColorPad(view, view.findViewById(R.id.password_entry));
++                return view;
++            }
+             return inflater.inflate(R.layout.choose_lock_password, container, false);
+         }
+ 
+diff --git a/src/com/android/settings/password/ColorLockUtils.java b/src/com/android/settings/password/ColorLockUtils.java
+new file mode 100644
+index 0000000..6d3f2aa
+--- /dev/null
++++ b/src/com/android/settings/password/ColorLockUtils.java
+@@ -0,0 +1,134 @@
++/*
++ * Copyright (C) 2026 DevTITANS 10 - Hands-On AOSP
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *      http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.android.settings.password;
++
++import android.content.Context;
++import android.provider.Settings;
++import android.text.Editable;
++import android.view.View;
++import android.widget.EditText;
++
++import com.android.settings.R;
++
++/**
++ * Helpers for the colour sequence screen lock.
++ *
++ * <p>The modality is deliberately implemented as a presentation layer on top of the existing
++ * numeric PIN credential: each colour of the palette maps to a fixed digit given by its position,
++ * so the sequence red-blue-green-orange is stored as the PIN {@code 1542}. Nothing about credential
++ * storage, Gatekeeper, the synthetic password or lockout handling changes.
++ *
++ * <p>The consequence is that {@link ScreenLockType#fromQuality(int)} and
++ * {@code KeyguardSecurityModel#getSecurityMode(int)} cannot distinguish a colour sequence from an
++ * ordinary PIN, because both report {@code PASSWORD_QUALITY_NUMERIC}. The user's choice is
++ * therefore recorded separately in {@link Settings.Secure} under {@link #COLOR_MODE_SETTING}, which
++ * is the single source of truth consulted by both Settings and SystemUI.
++ */
++public final class ColorLockUtils {
++
++    /**
++     * Per-user flag: {@code 1} when the colour sequence modality is active, {@code 0} (default)
++     * when the numeric credential should be entered with the ordinary PIN pad.
++     */
++    public static final String COLOR_MODE_SETTING = "lock_screen_color_mode";
++
++    /** Shortest accepted sequence. Mirrors the AOSP minimum for a PIN. */
++    public static final int MIN_LENGTH = 4;
++
++    /** Longest accepted sequence. Beyond this, memorability drops sharply. */
++    public static final int MAX_LENGTH = 8;
++
++    /**
++     * The colour keys in palette order. Index {@code i} maps to the digit {@code i + 1}; digits
++     * {@code 7}, {@code 8}, {@code 9} and {@code 0} are never produced by this modality.
++     */
++    private static final int[] KEY_IDS = {
++            R.id.color_key_1,
++            R.id.color_key_2,
++            R.id.color_key_3,
++            R.id.color_key_4,
++            R.id.color_key_5,
++            R.id.color_key_6,
++    };
++
++    private ColorLockUtils() {
++    }
++
++    /** Whether {@code userId} unlocks with a colour sequence rather than a numeric PIN pad. */
++    public static boolean isColorMode(Context context, int userId) {
++        if (context == null) {
++            return false;
++        }
++        return Settings.Secure.getIntForUser(
++                context.getContentResolver(), COLOR_MODE_SETTING, 0, userId) != 0;
++    }
++
++    /**
++     * Records whether {@code userId} uses the colour modality. Called when a lock type is chosen,
++     * and again with {@code false} if enrolment is abandoned, so the flag never outlives the
++     * credential it describes.
++     */
++    public static void setColorMode(Context context, int userId, boolean enabled) {
++        if (context == null) {
++            return;
++        }
++        Settings.Secure.putIntForUser(
++                context.getContentResolver(), COLOR_MODE_SETTING, enabled ? 1 : 0, userId);
++    }
++
++    /**
++     * Wires the colour keys of {@code root} so that tapping them appends the matching digit to
++     * {@code target}, which is the ordinary password field of the enrolment screen. The soft
++     * keyboard is suppressed, since the palette is the only intended input method here.
++     *
++     * @param root   the inflated colour layout
++     * @param target the credential field, normally {@code R.id.password_entry}
++     */
++    public static void bindColorPad(View root, EditText target) {
++        if (root == null || target == null) {
++            return;
++        }
++        target.setShowSoftInputOnFocus(false);
++
++        for (int i = 0; i < KEY_IDS.length; i++) {
++            final View key = root.findViewById(KEY_IDS[i]);
++            if (key == null) {
++                continue;
++            }
++            final String digit = String.valueOf(i + 1);
++            key.setOnClickListener(v -> {
++                if (target.getText().length() < MAX_LENGTH) {
++                    target.append(digit);
++                }
++            });
++        }
++
++        final View delete = root.findViewById(R.id.color_key_delete);
++        if (delete != null) {
++            delete.setOnClickListener(v -> {
++                final Editable text = target.getText();
++                if (text.length() > 0) {
++                    text.delete(text.length() - 1, text.length());
++                }
++            });
++            delete.setOnLongClickListener(v -> {
++                target.setText("");
++                return true;
++            });
++        }
++    }
++}
+diff --git a/src/com/android/settings/password/ScreenLockType.java b/src/com/android/settings/password/ScreenLockType.java
+index 8253065..1a20e91 100644
+--- a/src/com/android/settings/password/ScreenLockType.java
++++ b/src/com/android/settings/password/ScreenLockType.java
+@@ -37,6 +37,18 @@ public enum ScreenLockType {
+             DevicePolicyManager.PASSWORD_QUALITY_NUMERIC,
+             DevicePolicyManager.PASSWORD_QUALITY_NUMERIC_COMPLEX,
+             "unlock_set_pin"),
++    /**
++     * Unlock by tapping an ordered sequence of colors. The credential is stored as a numeric
++     * PIN whose digits are the palette positions of the chosen colors, so that the existing
++     * Gatekeeper and synthetic password storage is reused unchanged. Because the stored
++     * quality is therefore identical to {@link #PIN}, {@link #fromQuality(int)} cannot tell the
++     * two apart; the active modality is distinguished by
++     * {@link ColorLockUtils#isColorMode(android.content.Context, int)}.
++     */
++    COLOR(
++            DevicePolicyManager.PASSWORD_QUALITY_NUMERIC,
++            DevicePolicyManager.PASSWORD_QUALITY_NUMERIC_COMPLEX,
++            "unlock_set_color"),
+     PASSWORD(
+             DevicePolicyManager.PASSWORD_QUALITY_ALPHABETIC,
+             DevicePolicyManager.PASSWORD_QUALITY_COMPLEX,
