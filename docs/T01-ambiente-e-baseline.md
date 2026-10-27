@@ -92,8 +92,74 @@ cache.img         16M     dtb.img          encryptionkey.img
 
 ## Comportamento original
 
-_(a preencher com as capturas da execução)_
+O emulador foi iniciado e o fluxo completo de bloqueio foi percorrido **inteiramente por `adb`**, sem um único clique na interface. A escolha é deliberada: a máquina é acessada por área de trabalho remota, onde o clique é pouco confiável, e o roteiro por comando é reproduzível por qualquer pessoa da equipe com uma linha só. O script está em [`scripts/02-coletar-baseline.sh`](../blob/feat/bloqueio-por-cores/scripts/02-coletar-baseline.sh).
+
+```bash
+adb shell am start -a android.settings.SECURITY_SETTINGS
+adb exec-out screencap -p > 01-security.png
+
+adb shell am start -a android.app.action.SET_NEW_PASSWORD
+adb exec-out screencap -p > 02-metodos-originais.png
+
+adb shell locksettings set-pin 1234
+adb shell input keyevent 26   # apaga a tela
+adb shell input keyevent 26   # acende
+adb shell input keyevent 82   # sobe o bouncer
+adb shell input text 1234
+adb shell input keyevent 66   # confirma
+```
+
+Observação registrada durante a execução, que custou uma tentativa: **`ChooseLockGeneric` não é uma activity exportada**. Chamá-la pelo componente resulta em
+
+```text
+java.lang.SecurityException: Permission Denial: starting Intent
+{ cmp=com.android.settings/.password.ChooseLockGeneric }
+from null (pid=1950, uid=2000) not exported from uid 1000
+```
+
+O caminho suportado é a action pública `android.app.action.SET_NEW_PASSWORD`, usada acima.
+
+A tela original apresentou **None, Swipe, Pattern, PIN e Password**, com nenhuma credencial cadastrada. O PIN foi registrado como referência, a tela foi bloqueada e o aparelho desbloqueado com a credencial.
+
+### Capturas
+
+| Arquivo | Tamanho | Tela |
+| --- | --- | --- |
+| `01-security.png` | 171K | Security & privacy |
+| `02-metodos-originais.png` | 187K | Choose a screen lock — os cinco métodos originais |
+| `03-pin-configurado.png` | 185K | PIN cadastrado |
+| `04-tela-bloqueada.png` | 1,9M | tela de bloqueio |
+| `05-pedindo-pin.png` | 93K | bouncer pedindo o PIN |
+| `06-pin-digitado.png` | 97K | credencial digitada |
+| `07-desbloqueado.png` | 165K | após o desbloqueio |
+
+Os sete arquivos estão em `/home/devtitans-2/evidencias-t01` na máquina `devtitans-05`. **Falta anexá-los a esta issue** — é a única pendência da T01.
+
+As capturas saem em 1440×2960, direto do framebuffer, sem moldura de janela nem compressão de transmissão remota.
+
+## Problema de ambiente registrado
+
+Durante a execução o emulador foi iniciado em `gpu mode host` e o compositor do host passou a resetar o driver gráfico repetidamente:
+
+```text
+WARNING | cannot add library .../vulkan/libvulkan.so: failed
+KWin: Desktop effects were restarted due to a graphics reset  (×4)
+```
+
+A máquina em si estava ociosa — `load average 1,55` em 16 núcleos, 98% de CPU livre, swap praticamente intocado. O gargalo era a renderização acelerada sendo transmitida pela área de trabalho remota, agravada por um cliente de VPN ativo no host.
+
+**Solução adotada:** emulador headless.
+
+```bash
+emulator -no-snapshot -no-boot-anim -no-window -gpu swiftshader_indirect -no-audio &
+```
+
+O boot caiu de 19,3 s para 16,2 s e os resets gráficos cessaram. Está incorporado em [`scripts/01-subir-emulador.sh`](../blob/feat/bloqueio-por-cores/scripts/01-subir-emulador.sh).
 
 ## Arquivos anexados
 
-_(a anexar)_
+- [ ] as sete capturas listadas acima
+- [x] [`scripts/00-ambiente.sh`](../blob/feat/bloqueio-por-cores/scripts/00-ambiente.sh) — gera `ambiente.txt`, `fontes.txt`, `produto.txt` e `dispositivo.txt`
+- [x] [`scripts/01-subir-emulador.sh`](../blob/feat/bloqueio-por-cores/scripts/01-subir-emulador.sh)
+- [x] [`scripts/02-coletar-baseline.sh`](../blob/feat/bloqueio-por-cores/scripts/02-coletar-baseline.sh)
+- [x] [`docs/T01-ambiente-e-baseline.md`](../blob/feat/bloqueio-por-cores/docs/T01-ambiente-e-baseline.md)
