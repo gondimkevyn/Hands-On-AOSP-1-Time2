@@ -18,13 +18,13 @@ Trabalho prático sobre a adição de uma modalidade de desbloqueio ao **Android
 
 | Tarefa | Issue | Estado |
 | --- | --- | --- |
-| T01 — Ambiente e comportamento original | [#10](../../issues/10) | evidências coletadas, falta anexar |
-| T02 — De onde vem uma opção das configurações | [#9](../../issues/9) | concluída |
-| T03 — Especificação da modalidade | [#3](../../issues/3) | concluída |
-| T04 — A opção nas configurações | [#4](../../issues/4) | código escrito, falta compilar |
-| T05 — Interface de autenticação | [#5](../../issues/5) | código escrito, falta compilar |
-| T06 — Validação | [#6](../../issues/6) | plano e script prontos |
-| T07 — Documentação final | [#7](../../issues/7) | em consolidação |
+| T01 — Ambiente e comportamento original | [#10](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/10) | Concluída (evidências coletadas) |
+| T02 — De onde vem uma opção das configurações | [#9](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/9) | Concluída |
+| T03 — Especificação da modalidade | [#3](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/3) | Concluída |
+| T04 — A opção nas configurações | [#4](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/4) | Concluída (código e evidências) |
+| T05 — Interface de autenticação | [#5](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/5) | Concluída (código e evidências) |
+| T06 — Validação | [#6](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/6) | Script pronto para execução |
+| T07 — Documentação final | [#7](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/7) | Em consolidação |
 
 ## Como funciona
 
