@@ -18,13 +18,15 @@ Trabalho prático sobre a adição de uma modalidade de desbloqueio ao **Android
 
 | Tarefa | Issue | Estado |
 | --- | --- | --- |
-| T01 — Ambiente e comportamento original | [#10](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/10) | Concluída (evidências coletadas) |
+| T01 — Ambiente e comportamento original | [#10](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/10) | Concluída · 3 capturas do ciclo de bloqueio a refazer ([detalhe](docs/EVIDENCIAS.md)) |
 | T02 — De onde vem uma opção das configurações | [#9](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/9) | Concluída |
 | T03 — Especificação da modalidade | [#3](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/3) | Concluída |
-| T04 — A opção nas configurações | [#4](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/4) | Concluída (código e evidências) |
-| T05 — Interface de autenticação | [#5](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/5) | Concluída (código e evidências) |
-| T06 — Validação | [#6](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/6) | Script pronto para execução |
-| T07 — Documentação final | [#7](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/7) | Em consolidação |
+| T04 — A opção nas configurações | [#4](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/4) | Concluída · compilada e com evidências |
+| T05 — Interface de autenticação | [#5](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/5) | Concluída · falta a captura do desbloqueio concluído |
+| T06 — Validação | [#6](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/6) | **Não executada** — script pronto em `scripts/04-validar-t06.sh` |
+| T07 — Documentação final | [#7](https://github.com/gondimkevyn/Hands-On-AOSP-1-Time2/issues/7) | [Relatório escrito](docs/T07-relatorio-final.md) · falta o vídeo |
+
+Leitura recomendada: **[relatório final](docs/T07-relatorio-final.md)** e **[índice de evidências](docs/EVIDENCIAS.md)**.
 
 ## Como funciona
 
@@ -122,7 +124,18 @@ Nenhuma classe Java foi criada no SystemUI: o layout de cores declara a mesma vi
 
 ## Estado atual
 
-**O código ainda não foi compilado.** Ele foi escrito e revisado contra os fontes da tag `android-14.0.0_r27`, arquivo por arquivo, mas a validação de build é a próxima tarefa. Os pontos de risco conhecidos estão listados no fim de [docs/T04](docs/T04-opcao-nas-configuracoes.md) e [docs/T05](docs/T05-interface-de-autenticacao.md), em ordem de probabilidade.
+**O código foi compilado e está funcionando no emulador.** A opção aparece no seletor, o cadastro mostra a paleta e a tela de bloqueio aceita a sequência — tudo registrado em `evidencias-t04/` e `evidencias-t05/`, conferido imagem por imagem no [índice de evidências](docs/EVIDENCIAS.md).
+
+Falta:
+
+| Pendência | Onde está descrita |
+| --- | --- |
+| Executar os 8 cenários de validação | [docs/T06](docs/T06-plano-de-validacao.md) · `scripts/04-validar-t06.sh` |
+| Testar Direct Boot (risco mais sério) | [relatório, 8.4](docs/T07-relatorio-final.md) |
+| Capturar o desbloqueio concluído | [EVIDENCIAS.md](docs/EVIDENCIAS.md) |
+| Recapturar o ciclo de bloqueio da T01 | [EVIDENCIAS.md](docs/EVIDENCIAS.md) |
+| Três ajustes cosméticos: dígitos à mostra, textos dizendo "PIN", botão "CANCEL" | [relatório, 8.1–8.3](docs/T07-relatorio-final.md) |
+| Vídeo da demonstração | [docs/T07](docs/T07-relatorio-final.md) |
 
 ## Limitações conhecidas
 
