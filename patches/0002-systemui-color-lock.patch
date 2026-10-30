@@ -1,0 +1,406 @@
+diff --git a/packages/SystemUI/res-keyguard/layout/keyguard_color_view.xml b/packages/SystemUI/res-keyguard/layout/keyguard_color_view.xml
+new file mode 100644
+index 0000000..b175f5a
+--- /dev/null
++++ b/packages/SystemUI/res-keyguard/layout/keyguard_color_view.xml
+@@ -0,0 +1,25 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!--
++**
++** Copyright 2026, DevTITANS 10 - Hands-On AOSP
++**
++** Licensed under the Apache License, Version 2.0 (the "License")
++** you may not use this file except in compliance with the License.
++** You may obtain a copy of the License at
++**
++**     http://www.apache.org/licenses/LICENSE-2.0
++**
++** Unless required by applicable law or agreed to in writing, software
++** distributed under the License is distributed on an "AS IS" BASIS,
++** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++** See the License for the specific language governing permissions and
++** limitations under the License.
++*/
++-->
++<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent">
++
++    <include layout="@layout/keyguard_color_view_portrait" />
++
++</FrameLayout>
+diff --git a/packages/SystemUI/res-keyguard/layout/keyguard_color_view_portrait.xml b/packages/SystemUI/res-keyguard/layout/keyguard_color_view_portrait.xml
+new file mode 100644
+index 0000000..2ab72f7
+--- /dev/null
++++ b/packages/SystemUI/res-keyguard/layout/keyguard_color_view_portrait.xml
+@@ -0,0 +1,248 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!--
++**
++** Copyright 2026, DevTITANS 10 - Hands-On AOSP
++**
++** Licensed under the Apache License, Version 2.0 (the "License")
++** you may not use this file except in compliance with the License.
++** You may obtain a copy of the License at
++**
++**     http://www.apache.org/licenses/LICENSE-2.0
++**
++** Unless required by applicable law or agreed to in writing, software
++** distributed under the License is distributed on an "AS IS" BASIS,
++** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++** See the License for the specific language governing permissions and
++** limitations under the License.
++*/
++-->
++
++<!--
++     Colour sequence bouncer.
++
++     Derived from keyguard_pin_view_portrait.xml. It is deliberately the SAME KeyguardPINView
++     class with the SAME view ids, so no Java controller changes are needed: tapping a colour
++     appends its digit through the existing NumPadKey -> PasswordTextView wiring.
++
++     Two differences from the PIN layout:
++       1. key1..key6 carry a palette colour as background; their position defines the digit.
++       2. key7, key8, key9 and key0 are kept (KeyguardPINView#onFinishInflate looks all of them
++          up and would hit a null view otherwise) but are GONE and removed from the Flow, so a
++          colour sequence can only ever contain the digits 1-6.
++-->
++<com.android.keyguard.KeyguardPINView xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:androidprv="http://schemas.android.com/apk/res-auto"
++    android:id="@+id/keyguard_pin_view"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:layout_gravity="center_horizontal|bottom"
++    android:clipChildren="false"
++    android:clipToPadding="false"
++    android:orientation="vertical"
++    androidprv:layout_maxWidth="@dimen/keyguard_security_width">
++
++    <include layout="@layout/keyguard_bouncer_message_area"/>
++
++    <com.android.systemui.bouncer.ui.BouncerMessageView
++        android:id="@+id/bouncer_message_view"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:orientation="vertical" />
++
++    <androidx.constraintlayout.widget.ConstraintLayout
++        android:id="@+id/pin_container"
++        android:layout_width="match_parent"
++        android:layout_height="0dp"
++        android:layout_marginBottom="8dp"
++        android:clipChildren="false"
++        android:clipToPadding="false"
++        android:layout_weight="1"
++        android:layoutDirection="ltr"
++        android:orientation="vertical">
++
++        <!-- Progress indicator. PasswordTextView renders neutral dots, never the colours that
++             were tapped: echoing them back would show the sequence to anyone looking. -->
++        <com.android.keyguard.AlphaOptimizedRelativeLayout
++            android:id="@+id/row0"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:paddingBottom="@dimen/num_pad_entry_row_margin_bottom"
++            androidprv:layout_constraintTop_toTopOf="parent"
++            androidprv:layout_constraintEnd_toEndOf="parent"
++            androidprv:layout_constraintStart_toStartOf="parent"
++            androidprv:layout_constraintBottom_toTopOf="@id/key1"
++            androidprv:layout_constraintVertical_bias="0.5">
++
++            <com.android.keyguard.PasswordTextView
++                android:id="@+id/pinEntry"
++                style="@style/Widget.TextView.Password"
++                android:layout_width="@dimen/keyguard_security_width"
++                android:layout_height="@dimen/keyguard_password_height"
++                android:layout_centerHorizontal="true"
++                android:layout_marginRight="72dp"
++                android:contentDescription="@string/keyguard_accessibility_pin_area"
++                androidprv:scaledTextSize="@integer/scaled_password_text_size" />
++        </com.android.keyguard.AlphaOptimizedRelativeLayout>
++
++        <androidx.constraintlayout.widget.Guideline
++            android:id="@+id/pin_pad_top_guideline"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++            androidprv:layout_constraintGuide_percent="0"
++            android:orientation="horizontal" />
++
++        <!-- Eight elements, three per row: colours 1-3, colours 4-6, then delete and confirm. -->
++        <com.android.keyguard.KeyguardPinFlowView
++            android:id="@+id/flow1"
++            android:layout_width="0dp"
++            android:layout_height="0dp"
++            android:orientation="horizontal"
++            android:clipChildren="false"
++            android:clipToPadding="false"
++
++            androidprv:constraint_referenced_ids="key1,key2,key3,key4,key5,key6,delete_button,key_enter"
++
++            androidprv:flow_horizontalGap="@dimen/num_pad_key_margin_end"
++
++            androidprv:flow_horizontalStyle="packed"
++            androidprv:flow_maxElementsWrap="3"
++
++            androidprv:flow_verticalBias="1.0"
++            androidprv:flow_verticalGap="@dimen/num_pad_entry_row_margin_bottom"
++            androidprv:flow_verticalStyle="packed"
++
++            androidprv:flow_wrapMode="aligned"
++            androidprv:layout_constraintBottom_toBottomOf="parent"
++            androidprv:layout_constraintEnd_toEndOf="parent"
++            androidprv:layout_constraintStart_toStartOf="parent"
++            androidprv:layout_constraintTop_toBottomOf="@id/pin_pad_top_guideline" />
++
++        <com.android.keyguard.NumPadKey
++            android:id="@+id/key1"
++            android:layout_width="0dp"
++            android:layout_height="0dp"
++            android:background="@color/color_lock_red"
++            android:theme="@style/ColorLockNumPadKey"
++            android:contentDescription="@string/color_lock_red_description"
++            android:accessibilityTraversalBefore="@id/key2"
++            androidprv:digit="1"
++            androidprv:textView="@+id/pinEntry" />
++
++        <com.android.keyguard.NumPadKey
++            android:id="@+id/key2"
++            android:layout_width="0dp"
++            android:layout_height="0dp"
++            android:background="@color/color_lock_orange"
++            android:theme="@style/ColorLockNumPadKey"
++            android:contentDescription="@string/color_lock_orange_description"
++            android:accessibilityTraversalBefore="@id/key3"
++            androidprv:digit="2"
++            androidprv:textView="@+id/pinEntry" />
++
++        <com.android.keyguard.NumPadKey
++            android:id="@+id/key3"
++            android:layout_width="0dp"
++            android:layout_height="0dp"
++            android:background="@color/color_lock_yellow"
++            android:theme="@style/ColorLockNumPadKey"
++            android:contentDescription="@string/color_lock_yellow_description"
++            android:accessibilityTraversalBefore="@id/key4"
++            androidprv:digit="3"
++            androidprv:textView="@+id/pinEntry" />
++
++        <com.android.keyguard.NumPadKey
++            android:id="@+id/key4"
++            android:layout_width="0dp"
++            android:layout_height="0dp"
++            android:background="@color/color_lock_green"
++            android:theme="@style/ColorLockNumPadKey"
++            android:contentDescription="@string/color_lock_green_description"
++            android:accessibilityTraversalBefore="@id/key5"
++            androidprv:digit="4"
++            androidprv:textView="@+id/pinEntry" />
++
++        <com.android.keyguard.NumPadKey
++            android:id="@+id/key5"
++            android:layout_width="0dp"
++            android:layout_height="0dp"
++            android:background="@color/color_lock_blue"
++            android:theme="@style/ColorLockNumPadKey"
++            android:contentDescription="@string/color_lock_blue_description"
++            android:accessibilityTraversalBefore="@id/key6"
++            androidprv:digit="5"
++            androidprv:textView="@+id/pinEntry" />
++
++        <com.android.keyguard.NumPadKey
++            android:id="@+id/key6"
++            android:layout_width="0dp"
++            android:layout_height="0dp"
++            android:background="@color/color_lock_purple"
++            android:theme="@style/ColorLockNumPadKey"
++            android:contentDescription="@string/color_lock_purple_description"
++            android:accessibilityTraversalBefore="@id/delete_button"
++            androidprv:digit="6"
++            androidprv:textView="@+id/pinEntry" />
++
++        <!-- Declared but never shown: KeyguardPINView#onFinishInflate resolves all ten digit
++             keys, so removing them would produce a null entry in its view matrix. -->
++        <com.android.keyguard.NumPadKey
++            android:id="@+id/key7"
++            android:layout_width="0dp"
++            android:layout_height="0dp"
++            android:visibility="gone"
++            androidprv:digit="7"
++            androidprv:textView="@+id/pinEntry" />
++
++        <com.android.keyguard.NumPadKey
++            android:id="@+id/key8"
++            android:layout_width="0dp"
++            android:layout_height="0dp"
++            android:visibility="gone"
++            androidprv:digit="8"
++            androidprv:textView="@+id/pinEntry" />
++
++        <com.android.keyguard.NumPadKey
++            android:id="@+id/key9"
++            android:layout_width="0dp"
++            android:layout_height="0dp"
++            android:visibility="gone"
++            androidprv:digit="9"
++            androidprv:textView="@+id/pinEntry" />
++
++        <com.android.keyguard.NumPadKey
++            android:id="@+id/key0"
++            android:layout_width="0dp"
++            android:layout_height="0dp"
++            android:visibility="gone"
++            androidprv:digit="0"
++            androidprv:textView="@+id/pinEntry" />
++
++        <com.android.keyguard.NumPadButton
++            android:id="@+id/delete_button"
++            style="@style/NumPadKey.Delete"
++            android:layout_width="0dp"
++            android:layout_height="0dp"
++            android:accessibilityTraversalBefore="@id/key_enter"
++            android:contentDescription="@string/keyboardview_keycode_delete" />
++
++        <!-- Explicit submit. The sequence has a variable length, so auto-submitting on a fixed
++             count would leak how long the user's sequence is. -->
++        <com.android.keyguard.NumPadButton
++            android:id="@+id/key_enter"
++            style="@style/NumPadKey.Enter"
++            android:layout_width="0dp"
++            android:layout_height="0dp"
++            android:contentDescription="@string/keyboardview_keycode_enter" />
++    </androidx.constraintlayout.widget.ConstraintLayout>
++
++    <include layout="@layout/keyguard_eca"
++        android:id="@+id/keyguard_selector_fade_container"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:orientation="vertical"
++        android:layout_gravity="bottom|center_horizontal"
++        android:layout_marginTop="@dimen/keyguard_eca_top_margin"
++        android:layout_marginBottom="@dimen/keyguard_eca_bottom_margin"
++        android:gravity="center_horizontal"/>
++
++</com.android.keyguard.KeyguardPINView>
+diff --git a/packages/SystemUI/res-keyguard/values/color_lock_palette.xml b/packages/SystemUI/res-keyguard/values/color_lock_palette.xml
+new file mode 100644
+index 0000000..9c64710
+--- /dev/null
++++ b/packages/SystemUI/res-keyguard/values/color_lock_palette.xml
+@@ -0,0 +1,32 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!--
++     Copyright (C) 2026 DevTITANS 10 - Hands-On AOSP
++
++     Palette for the colour sequence bouncer. These values MUST match
++     packages/apps/Settings/res/values/color_lock_palette.xml: the position of a colour in the
++     palette is the digit it stands for, so a mismatch between enrolment and unlock would make
++     every enrolled sequence unusable.
++-->
++<resources>
++    <color name="color_lock_red">#D32F2F</color>
++    <color name="color_lock_orange">#F57C00</color>
++    <color name="color_lock_yellow">#FBC02D</color>
++    <color name="color_lock_green">#388E3C</color>
++    <color name="color_lock_blue">#1976D2</color>
++    <color name="color_lock_purple">#7B1FA2</color>
++
++    <!--
++         Theme overlay applied to each colour key so the digit drawn by NumPadKey is not visible
++         on top of the colour. NumPadKey resolves its text colour from the theme
++         (NumPadKey.java:159), which is why this is done with android:theme rather than
++         android:textColor on the key itself.
++
++         TODO(validar no lab): if the digits still show after a build, replace this with a style
++         that extends @style/NumPadKey and sets the text colour explicitly, or hide
++         R.id.digit_text from KeyguardPINView#onFinishInflate when the colour mode is active.
++    -->
++    <style name="ColorLockNumPadKey">
++        <item name="android:textColorPrimary">@android:color/transparent</item>
++        <item name="android:textColorSecondary">@android:color/transparent</item>
++    </style>
++</resources>
+diff --git a/packages/SystemUI/res-keyguard/values/color_lock_strings.xml b/packages/SystemUI/res-keyguard/values/color_lock_strings.xml
+new file mode 100644
+index 0000000..6bad568
+--- /dev/null
++++ b/packages/SystemUI/res-keyguard/values/color_lock_strings.xml
+@@ -0,0 +1,16 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!--
++     Copyright (C) 2026 DevTITANS 10 - Hands-On AOSP
++
++     Accessibility labels for the colour sequence bouncer. Without these a screen reader would
++     announce the digit behind each key and read the user's sequence out loud.
++-->
++<resources>
++    <string name="color_lock_red_description">Red</string>
++    <string name="color_lock_orange_description">Orange</string>
++    <string name="color_lock_yellow_description">Yellow</string>
++    <string name="color_lock_green_description">Green</string>
++    <string name="color_lock_blue_description">Blue</string>
++    <string name="color_lock_purple_description">Purple</string>
++    <string name="keyguard_enter_your_color">Enter your color sequence</string>
++</resources>
+diff --git a/packages/SystemUI/src/com/android/keyguard/KeyguardSecurityViewFlipperController.java b/packages/SystemUI/src/com/android/keyguard/KeyguardSecurityViewFlipperController.java
+index bc5b1ba..b43f530 100644
+--- a/packages/SystemUI/src/com/android/keyguard/KeyguardSecurityViewFlipperController.java
++++ b/packages/SystemUI/src/com/android/keyguard/KeyguardSecurityViewFlipperController.java
+@@ -16,6 +16,7 @@
+ 
+ package com.android.keyguard;
+ 
++import android.provider.Settings;
+ import android.util.Log;
+ import android.view.LayoutInflater;
+ 
+@@ -45,6 +46,13 @@ public class KeyguardSecurityViewFlipperController
+     private static final boolean DEBUG = KeyguardConstants.DEBUG;
+     private static final String TAG = "KeyguardSecurityView";
+ 
++    /**
++     * Per-user flag written by Settings when the colour sequence lock is chosen. Kept as a
++     * literal here because Settings and SystemUI share no source; the two definitions must stay
++     * in sync with {@code ColorLockUtils.COLOR_MODE_SETTING}.
++     */
++    private static final String COLOR_MODE_SETTING = "lock_screen_color_mode";
++
+     private final List<KeyguardInputViewController<KeyguardInputView>> mChildren =
+             new ArrayList<>();
+     private final LayoutInflater mLayoutInflater;
+@@ -142,7 +150,13 @@ public class KeyguardSecurityViewFlipperController
+     private int getLayoutIdFor(SecurityMode securityMode) {
+         switch (securityMode) {
+             case Pattern: return R.layout.keyguard_pattern_view;
+-            case PIN: return R.layout.keyguard_pin_view;
++            // A colour sequence is stored as a numeric PIN, so getSecurityMode() reports PIN for
++            // both modalities. The stored preference is what tells them apart, and the only
++            // difference is which keypad the user is shown; the view class, its ids and the
++            // controller behind them are identical.
++            case PIN: return isColorModeEnabled()
++                    ? R.layout.keyguard_color_view
++                    : R.layout.keyguard_pin_view;
+             case Password: return R.layout.keyguard_password_view;
+             case SimPin: return R.layout.keyguard_sim_pin_view;
+             case SimPuk: return R.layout.keyguard_sim_puk_view;
+@@ -151,6 +165,19 @@ public class KeyguardSecurityViewFlipperController
+         }
+     }
+ 
++    /**
++     * Whether the current user enrolled their numeric credential through the colour sequence
++     * modality. Written by Settings when the lock type is chosen; see
++     * {@code com.android.settings.password.ColorLockUtils}.
++     */
++    private boolean isColorModeEnabled() {
++        return Settings.Secure.getIntForUser(
++                mView.getContext().getContentResolver(),
++                COLOR_MODE_SETTING,
++                0,
++                KeyguardUpdateMonitor.getCurrentUser()) != 0;
++    }
++
+     private int getKeyguardInputViewId(SecurityMode securityMode) {
+         //Keyguard Input View is not the root view of the layout, use these IDs for lookup.
+         switch (securityMode) {
