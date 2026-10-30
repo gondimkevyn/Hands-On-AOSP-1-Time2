@@ -4,6 +4,8 @@ O que **cada arquivo realmente mostra**, conferido imagem por imagem. Mantido se
 
 Todas as capturas são do emulador `sdk_phone_x86_64-userdebug`, AOSP `android-14.0.0_r27`, em 1440×2960, obtidas com `adb exec-out screencap -p`.
 
+O trabalho passou por dois ambientes do laboratório: a preparação e o baseline em `devtitans-05`, a compilação e a coleta das evidências em `devtitans-18`. Mesma tag, mesmo produto, mesma variante — o que muda entre o antes e o depois é o patch.
+
 ---
 
 ## T01 — comportamento original (antes dos patches)

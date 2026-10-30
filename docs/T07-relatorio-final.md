@@ -32,6 +32,17 @@ A modalidade implementada é a **sequência de cores**: o usuário cadastra de 4
 | Build ID | `UQ1A.240205.004.B1` |
 | Plataforma | Android 14, codename `VanillaIceCream`, estado `REL` |
 
+### Duas máquinas
+
+O trabalho foi executado em dois ambientes do laboratório, ambos com a mesma tag e o mesmo produto:
+
+| Ambiente | Etapas |
+| --- | --- |
+| `devtitans-05` | preparação, baseline e investigação (T01 e T02) |
+| `devtitans-18` | compilação, execução e coleta de evidências (T04 a T07) |
+
+Por isso as capturas do estado original e as do estado alterado vêm de máquinas diferentes. Não compromete a comparação: o produto, a variante e a tag são os mesmos, e o que muda entre uma e outra é exatamente o patch. Registrado também nas issues #10 e #4.
+
 Produto e variante foram confirmados nos fontes e na imagem compilada, não por suposição:
 
 ```bash
@@ -303,7 +314,19 @@ As duas primeiras linhas, tomadas juntas, são o antes e o depois: mesma tela, m
 
 Um detalhe útil: a captura do estado original mostra apenas Pattern, PIN e Password — **sem None e Swipe**. Não é defeito. A tela foi aberta pela action `SET_NEW_PASSWORD` no fluxo com biometria, que ativa `mHideInsecureScreenLockTypes`, e a regra está em `isScreenLockVisible` (linhas 164-186). A captura é confirmação empírica de uma regra levantada na investigação antes de ser observada.
 
-### 7.2 O que não está comprovado
+### 7.2 Os riscos previstos antes do build
+
+Antes de compilar, cada parte da implementação foi entregue com uma lista de pontos que poderiam falhar. O registro da compilação em `devtitans-18` (issue #4) fechou os três da T04:
+
+| Risco previsto | Resultado |
+| --- | --- |
+| `Settings.Secure.getIntForUser`/`putIntForUser` são `@hide` e podem não estar acessíveis | compilou sem erro contra a API interna |
+| `choose_lock_color.xml` pode não ter todos os ids que o fragmento procura | atendeu a todas as referências, sem `NullPointerException` |
+| `setShowSoftInputOnFocus(false)` pode ser revertido pelo fragmento | o teclado virtual ficou oculto durante a seleção |
+
+Dos riscos da T05, dois se confirmaram — os dígitos visíveis sobre as cores e os textos dizendo "PIN" — e estão na seção 8.
+
+### 7.3 O que não está comprovado
 
 | Item | Situação |
 | --- | --- |
